@@ -1,8 +1,0 @@
-#content, #submitButton, #timeUpMessage {
-    display: none;
-}
-
-#timer {
-    font-size: 20px;
-    margin-top: 10px;
-}
