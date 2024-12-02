@@ -8,7 +8,7 @@ import bookingsRouter from "./routes/booking-routes.js";
 import cors from "cors";
 dotenv.config();
 const app = express();
-
+app.use(cors());
 // middlewares
 app.use(express.json());
 app.use("/user", userRouter);
@@ -21,7 +21,7 @@ mongoose.connect(
     `mongodb+srv://admin:${process.env.MONGODB_PASSWORD}@cluster0.shxan.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
 ).then(
     () => app.listen(
-        5000,
+        5001,
         () => console.log("Connected To Database And Server is Running")
     )
 ).catch((e) => console.log(e));

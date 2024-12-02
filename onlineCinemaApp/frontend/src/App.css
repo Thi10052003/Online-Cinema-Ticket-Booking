@@ -12,9 +12,14 @@
     animation: App-logo-spin infinite 20s linear;
   }
 }
+body {
+  margin: 0;
+  background-color: black; /* Set global background color */
+  color: white; /* Ensure text remains readable */
+}
 
 .App-header {
-  background-color: #282c34;
+  background-color: black; /* Change the background color to black */
   min-height: 100vh;
   display: flex;
   flex-direction: column;

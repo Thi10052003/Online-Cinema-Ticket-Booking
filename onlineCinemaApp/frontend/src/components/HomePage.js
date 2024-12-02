@@ -3,15 +3,16 @@ import React, { useEffect, useState } from 'react';
 import MovieItem from './Movies/MovieItem';
 import { Link } from 'react-router-dom'; // Import Link from react-router-dom
 import { getAllMovies } from '../api-helpers/api-helpers';
+
 const HomePage = () => {
-    const [movies,setMovies]=useState([]);
-    useEffect(()=>{
+    const [movies, setMovies] = useState([]);
+
+    useEffect(() => {
         getAllMovies()
-        .then((data)=>setMovies(data.movies))
-        .catch(err=>console.log(err))
-    },[])
-    console.log(movies);
-    
+            .then((data) => setMovies(data.movies))  // Assuming 'movies' is the response property
+            .catch((err) => console.log(err));
+    }, []);
+
     return (
         <Box
             width="100%"
@@ -19,21 +20,22 @@ const HomePage = () => {
             margin="auto"
             marginTop={2}
             sx={{
-                padding: { xs: 2, sm: 3, md: 4 }, // Padding adjusts based on screen size
-                maxWidth: '1200px', // Max width for larger screens
+                backgroundColor: "black",
+                padding: { xs: 2, sm: 3, md: 4 },
+                maxWidth: '1200px',
             }}
         >
             <Box
                 margin="auto"
                 width="100%"
-                height={{ xs: '30vh', sm: '40vh' }} // Responsive height for different screen sizes
+                height={{ xs: '30vh', sm: '40vh' }}
                 padding={2}
                 display="flex"
                 justifyContent="center"
                 alignItems="center"
             >
                 <img
-                    src="https://i.ytimg.com/vi/r_W6mXqzJNU/maxresdefault.jpg"
+                    src="https://i.ytimg.com/vi/e7RvFZ6XtkI/maxresdefault.jpg"
                     alt="Spider Man"
                     style={{
                         objectFit: 'cover',
@@ -44,7 +46,7 @@ const HomePage = () => {
             </Box>
 
             <Box padding={{ xs: 3, sm: 5 }} margin="auto">
-                <Typography variant="h4" textAlign="center">
+                <Typography variant="h4" textAlign="center" sx={{ color: "white" }}>
                     Latest Release
                 </Typography>
             </Box>
@@ -57,18 +59,24 @@ const HomePage = () => {
                 gap={3}
                 sx={{ marginBottom: 3 }}
             >
-                {movies &&movies
-                .slice(0,4)
-                .map((movie,index) => (
-                    <MovieItem id={movie.id} title={movie.title} posterUrl = {movie.posterUrl} releaseDate={movie.releaseDate} key={index} />
-                ))}
+                {movies && movies
+                    .slice(0, 6)
+                    .map((movie, index) => (
+                        <MovieItem
+                            id={movie.id}
+                            title={movie.title}
+                            posterUrl={movie.posterUrl}
+                            releaseDate={movie.releaseDate}
+                            key={index}
+                        />
+                    ))}
             </Box>
             <Box display={'flex'} padding={5} margin={'auto'}>
                 <Button
                     component={Link}
                     to="/movies"
                     variant="outlined"
-                    sx={{ margin: "auto", color: "#2b2d42" }}
+                    sx={{ margin: "auto", color: "#white" }}
                 >
                     View All Movies
                 </Button>
