@@ -1,0 +1,25 @@
+body {
+    background-color: #121212;
+    color: #fff;
+  }
+  
+  .payment-container {
+    background-color: #1e1e1e;
+    padding: 2rem;
+    border-radius: 10px;
+    color: #fff;
+    text-align: center;
+  }
+  
+  button {
+    background-color: #90caf9;
+    color: #121212;
+  }
+  
+  button:hover {
+    background-color: #64b5f6;
+  }
+  
+  img {
+    border-radius: 10px;
+  }

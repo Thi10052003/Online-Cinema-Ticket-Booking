@@ -1,5 +1,6 @@
 import { Button, Card, CardContent, Typography, Box } from '@mui/material';
 import React from 'react';
+import { Link } from "react-router-dom";
 
 const MovieItem = ({ title, releaseDate, posterUrl, id }) => {
     return (
@@ -60,7 +61,19 @@ const MovieItem = ({ title, releaseDate, posterUrl, id }) => {
                 <Typography variant="h6" component="div" sx={{ marginBottom: '8px' }}>
                     {title}
                 </Typography>
-                <Button variant="contained" size="small">Book</Button>
+                <Button variant="contained"
+                    fullWidth
+                    LinkComponent={Link}
+                    to={`/booking/${id}`}
+                    sx={{
+                    margin: "auto",
+                    bgcolor: "#2b2d42",
+                    ":hover": {
+                        bgcolor: "#121217",
+                        },
+                    }}
+                    size="small"
+                >Book</Button>
             </Box>
         </Card>
     );
