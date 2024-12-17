@@ -1,10 +1,9 @@
-import { Button, FormLabel, TextField, Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { getMovieDetails, newBooking } from "../../api-helpers/api-helpers";
 import './Booking.css'; // Import CSS
-// import screenImg from "../../Img/5ff3a50c.webp"; // Update with the actual path to your image
 import { useNavigate } from "react-router-dom";
 
 const Booking = () => {
@@ -14,14 +13,14 @@ const Booking = () => {
   const [movie, setMovie] = useState(data);
   const [inputs, setInputs] = useState({ seatNumber: "", date: "" });
   const [selectedSeats, setSelectedSeats] = useState([]);
-  const [occupiedSeats, setOccupiedSeats] = useState(["B3", "C4", "D5"]); // Example of occupied seats
+  const [occupiedSeats] = useState(["B3","B4", "C4", "D5","E9","E10","E11","E12"]);
   const [totalCost, setTotalCost] = useState(0);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const id = useParams().id;
 
-  const rows = ["A", "B", "C", "D", "E"];
-  const seatsPerRow = 8;
+  const rows = ["A", "B", "C", "D", "E","F","G","H","J"];
+  const seatsPerRow = 20;
 
   useEffect(() => {
     setLoading(true);
@@ -81,46 +80,35 @@ const Booking = () => {
   if (loading) {
     return <Typography>Loading...</Typography>;
   }
-
+  const handleCancel = () => {
+    navigate("/movies");
+  };
   return (
     <div>
       {movie && (
         <div>
           <Typography padding={3} fontFamily="Arial" variant="h4" textAlign="center">
-            {movie.title}
+            BOOKING ONLINE
           </Typography>
           <Box display="flex" justifyContent="center">
-            <Box display="flex" flexDirection="column" paddingTop={3} width="50%">
-            <img className="poster-image" src={movie.posterUrl} alt={movie.title} />
-              <Box width="80%" marginTop={3} padding={2}>
-                <Typography paddingTop={2}>{movie.description}</Typography>
-                <Typography fontWeight="bold" marginTop={1}>
-                  Starrer: {movie.actors.map((actor) => " " + actor + " ")}
-                </Typography>
-                <Typography fontWeight="bold" marginTop={1}>
-                  Release Date: {new Date(movie.releaseDate).toDateString()}
-                </Typography>
-              </Box>
-            </Box>
-            <Box width="50%" paddingTop={3}>
+            <Box width="100%" paddingTop={3}>
               <form onSubmit={handleSubmit}>
-                <Box padding={5} margin="auto" display="flex" flexDirection="column">
-                  <FormLabel>Seat Selection</FormLabel>
+                <Box margin="auto" display="flex" flexDirection="column">
                   <Box className="seat-container">
-                    {/* Add screen image */}
-                    {/* <img src={screenImg} alt="screen" className="screen" /> */}
+                    <div class="screen" id="screen">
+                      Screen
+                    </div>
                     {rows.map((row) => (
                       <Box key={row} className="row">
                         {Array.from({ length: seatsPerRow }, (_, i) => `${row}${i + 1}`).map((seat) => (
                           <div
                             key={seat}
-                            className={`seat ${
-                              occupiedSeats.includes(seat)
+                            className={`seat ${occupiedSeats.includes(seat)
                                 ? "occupied"
                                 : selectedSeats.includes(seat)
-                                ? "selected"
-                                : "available"
-                            }`}
+                                  ? "selected"
+                                  : "available"
+                              }`}
                             onClick={() => handleSeatSelection(seat)}
                           >
                             {seat}
@@ -129,24 +117,27 @@ const Booking = () => {
                       </Box>
                     ))}
                   </Box>
-                  <Typography variant="h6" sx={{ marginTop: "20px" }}>
-                    Total Cost: {totalCost} ₫
-                  </Typography>
-                  <FormLabel>Booking Date</FormLabel>
-                  <TextField
-                    name="date"
-                    type="date"
-                    margin="normal"
-                    variant="standard"
-                    value={inputs.date}
-                    onChange={(e) => setInputs({ ...inputs, date: e.target.value })}
-                  />
-                  <Button type="submit" sx={{ mt: 3 }}>
-                    Book Now
-                  </Button>
                 </Box>
               </form>
               {error && <Typography color="error">{error}</Typography>}
+            </Box>
+          </Box>
+          <Box display="flex" justifyContent="space-between" alignItems="center" marginTop={5} padding={2} className="poster-info">
+            <Box display="flex" alignItems="center">
+              <img className="poster-image" style={{ width: "100px", height: "150px" }} src={movie.posterUrl} alt={movie.title} />
+              <Box marginLeft={2}>
+                <Typography variant="h6" fontWeight="bold">{movie.title}</Typography>
+                <Typography>Price: {totalCost} ₫</Typography>
+                <Typography variant="body1" sx={{ marginTop: "8px" }}>Selected Seats: {selectedSeats.join(", ") || "None"}</Typography>
+              </Box>
+            </Box>
+            <Box display="flex" gap={2}>
+              <Button onClick={handleCancel} variant="contained" sx={{ height: "40px", width: "200px", backgroundColor: "red", color: "white", '&:hover': { backgroundColor: "darkred" } }}>
+                Cancel Booking
+              </Button>
+              <Button type="submit" variant="contained" color="primary" sx={{ height: "40px", width: "200px" }}>
+                Book Now
+              </Button>
             </Box>
           </Box>
         </div>
