@@ -86,8 +86,8 @@ const Booking = () => {
     <div>
       {movie && (
         <div>
-          <Typography padding={3} fontFamily="fantasy" variant="h4" textAlign="center">
-            Book Tickets For Movie: {movie.title}
+          <Typography padding={3} fontFamily="Arial" variant="h4" textAlign="center">
+            {movie.title}
           </Typography>
           <Box display="flex" justifyContent="center">
             <Box display="flex" flexDirection="column" paddingTop={3} width="50%">

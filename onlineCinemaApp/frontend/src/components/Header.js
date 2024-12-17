@@ -40,7 +40,7 @@ const Header = () => {
     };
 
     return (
-        <AppBar position="sticky" sx={{ bgcolor: "#211134" }}>
+        <AppBar position="sticky" sx={{ bgcolor: "#222222" }}>
             <Toolbar>
                 <Box width="20%">
                     <Link to="/">
@@ -48,22 +48,48 @@ const Header = () => {
                     </Link>
                 </Box>
                 <Box width="30%" margin="auto">
-                    <Autocomplete
-                        freeSolo
-                        value={searchValue}
-                        onInputChange={(e, newInputValue) => setSearchValue(newInputValue)}
-                        onChange={handleMovieSearchChange}
-                        options={movies && movies.map((option) => option.title)}
-                        renderInput={(params) => (
-                            <TextField
-                                sx={{ input: { color: "#white" } }}
-                                variant="standard"
-                                {...params}
-                                placeholder="Search Movies"
-                            />
-                        )}
-                    />
-                </Box>
+  <Autocomplete
+    freeSolo
+    value={searchValue}
+    onInputChange={(e, newInputValue) => setSearchValue(newInputValue)}
+    onChange={handleMovieSearchChange}
+    options={movies && movies.map((option) => option.title)}
+    renderInput={(params) => (
+      <TextField
+        {...params}
+        placeholder="Search Movies"
+        variant="standard"
+        sx={{
+          input: { color: "white" }, /* Input text color */
+          label: { color: "white" }, /* Label color */
+          "& .MuiInput-underline:before": {
+            borderBottomColor: "white", /* Bottom border before focus */
+          },
+          "& .MuiInput-underline:hover:before": {
+            borderBottomColor: "white", /* Bottom border on hover */
+          },
+          "& .MuiInput-underline:after": {
+            borderBottomColor: "white", /* Bottom border after focus */
+          },
+          "& .MuiInputBase-root": {
+            color: "white", /* Ensures dropdown text is also white */
+          },
+          "& .MuiAutocomplete-popupIndicator": {
+            color: "white", /* Color of dropdown arrow */
+          },
+          "& .MuiOutlinedInput-notchedOutline": {
+            borderColor: "white", /* For outlined variant (if needed) */
+          },
+          "&::placeholder": { /* Placeholder text color */
+            color: "white",
+            opacity: 1,
+          },
+        }}
+      />
+    )}
+  />
+</Box>
+
                 <Box display="flex">
                     <Tabs
                         textColor="inherit"

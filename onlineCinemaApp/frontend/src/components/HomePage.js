@@ -18,7 +18,6 @@ const HomePage = () => {
             width="100%"
             height="100%"
             margin="auto"
-            marginTop={2}
             sx={{
                 backgroundColor: "black",
                 padding: { xs: 2, sm: 3, md: 4 },
@@ -63,7 +62,7 @@ const HomePage = () => {
                     .slice(0, 6)
                     .map((movie, index) => (
                         <MovieItem
-                            id={movie.id}
+                            id={movie._id}
                             title={movie.title}
                             posterUrl={movie.posterUrl}
                             releaseDate={movie.releaseDate}

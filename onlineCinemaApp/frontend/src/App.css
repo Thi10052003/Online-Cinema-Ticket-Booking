@@ -1,5 +1,25 @@
+/* Reset global margin, padding, and box sizing */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  min-height: 100vh; /* Ensure full viewport height */
+  background-color: black; /* Set global background color */
+  color: white; /* Ensure text remains readable */
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+}
+
 .App {
   text-align: center;
+  background-color: black; /* Set the .App background to black */
+  min-height: 100vh; /* Ensure full viewport height */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .App-logo {
@@ -12,14 +32,9 @@
     animation: App-logo-spin infinite 20s linear;
   }
 }
-body {
-  margin: 0;
-  background-color: black; /* Set global background color */
-  color: white; /* Ensure text remains readable */
-}
 
 .App-header {
-  background-color: black; /* Change the background color to black */
+  background-color: black; /* Set header background to black */
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -30,7 +45,7 @@ body {
 }
 
 .App-link {
-  color: #61dafb;
+  color: #61dafb; /* Link color */
 }
 
 @keyframes App-logo-spin {
@@ -40,4 +55,7 @@ body {
   to {
     transform: rotate(360deg);
   }
+}
+section, main, footer {
+  background-color: black !important;
 }

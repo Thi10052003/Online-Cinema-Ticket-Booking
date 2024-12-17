@@ -13,7 +13,7 @@ const Movies = () => {
   }, []);
 
   return (
-    <Box margin={"auto"} marginTop={4}>
+    <Box margin={"auto"}>
       <Typography variant="h4" padding={2} textAlign={"center"}>
         All Movies
       </Typography>

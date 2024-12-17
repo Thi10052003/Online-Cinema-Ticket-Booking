@@ -2,7 +2,6 @@ import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import { DeleteForeverOutlined } from "@mui/icons-material/";
-
 import {
   IconButton,
   List,
@@ -12,25 +11,38 @@ import {
 } from "@mui/material";
 import { deleteBooking, getUserBookings } from "../../helpers/api-helpers";
 import { useNavigate } from "react-router-dom";
+
 const User = () => {
   const navigate = useNavigate();
   const [bookings, setBookings] = useState([]);
+
   const onResReceived = (res) => {
     setBookings(res.bookings);
   };
+
   useEffect(() => {
     getUserBookings()
       .then(onResReceived)
       .catch((err) => console.log(err));
   }, []);
+
   console.log(bookings);
+
   const handleDelete = (id) => {
     deleteBooking(id)
       .then(() => navigate("/"))
       .catch((err) => console.log(err));
   };
+
   return (
-    <Box width="100%" display={"flex"}>
+    <Box
+      width="100%"
+      height="100%"
+      display="flex"
+      bgcolor="black" /* Set background to black */
+      minHeight="100vh" /* Ensure full height for viewport */
+      color="white" /* Set text color to white */
+    >
       <Box
         display="flex"
         flexDirection={"column"}
@@ -38,28 +50,30 @@ const User = () => {
         alignItems={"center"}
         width="30%"
       >
-        <PersonRoundedIcon sx={{ fontSize: "20rem" }} />
+        <PersonRoundedIcon sx={{ fontSize: "20rem", color: "white" }} />
         <Typography
           padding={1}
           width="100px"
           textAlign={"center"}
           border="1px solid #ccc"
           borderRadius={10}
+          color="white"
         >
           Name: {bookings.length > 1 && bookings[0].user.name}
         </Typography>
       </Box>
       <Box width="70%" display="flex" flexDirection={"column"}>
-        <Typography
-          variant="h3"
-          fontFamily={"verdana"}
-          textAlign="center"
-          padding={2}
-        >
+        <Typography variant="h3" fontFamily={"verdana"} textAlign="center">
           Bookings
         </Typography>
 
-        <Box margin="auto" display="flex" flexDirection={"column"} width="80%">
+        <Box
+          margin="auto"
+          display="flex"
+          flexDirection={"column"}
+          width="80%"
+          color={"white"}
+        >
           <List>
             {bookings &&
               bookings.map((booking, index) => (
