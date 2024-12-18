@@ -22,6 +22,8 @@ const Booking = () => {
   const rows = ["A", "B", "C", "D", "E","F","G","H","J"];
   const seatsPerRow = 20;
 
+  const date = "28-05-2025";
+
   useEffect(() => {
     setLoading(true);
     getMovieDetails(id)
@@ -77,12 +79,14 @@ const Booking = () => {
       .catch((err) => setError("Booking failed. Please try again."));
   };
 
-  if (loading) {
-    return <Typography>Loading...</Typography>;
-  }
   const handleCancel = () => {
     navigate("/movies");
   };
+
+  if (loading) {
+    return <Typography>Loading...</Typography>;
+  }
+
   return (
     <div>
       {movie && (
@@ -95,7 +99,7 @@ const Booking = () => {
               <form onSubmit={handleSubmit}>
                 <Box margin="auto" display="flex" flexDirection="column">
                   <Box className="seat-container">
-                    <div class="screen" id="screen">
+                    <div className="screen" id="screen">
                       Screen
                     </div>
                     {rows.map((row) => (
@@ -115,29 +119,45 @@ const Booking = () => {
                           </div>
                         ))}
                       </Box>
+                      
                     ))}
+                    <Box display="flex" justifyContent="center" gap={5} marginTop={5}>
+                <Box display="flex" alignItems="center">
+                  <div style={{ width: "20px", height: "20px", backgroundColor: "#00bcd4", marginRight: "5px" }}></div>
+                  <Typography>Selected Seat</Typography>
+                </Box>
+                <Box display="flex" alignItems="center">
+                  <div style={{ width: "20px", height: "20px", backgroundColor: "#ff5252", marginRight: "5px" }}></div>
+                  <Typography>Occupied Seat</Typography>
+                </Box>
+                <Box display="flex" alignItems="center">
+                  <div style={{ width: "20px", height: "20px", backgroundColor: "#424242", marginRight: "5px" }}></div>
+                  <Typography>Seat Available</Typography>
+                </Box>
+              </Box>
+                  </Box>
+                </Box>
+                <Box display="flex" justifyContent="space-between" alignItems="center" marginTop={5} padding={2} className="poster-info">
+                  <Box display="flex" alignItems="center">
+                    <img className="poster-image" style={{ width: "100px", height: "150px" }} src={movie.posterUrl} alt={movie.title} />
+                    <Box marginLeft={2}>
+                      <Typography variant="h6" fontWeight="bold">{movie.title}</Typography>
+                      <Typography>Price: {totalCost} ₫</Typography>
+                      <Typography variant="body1" sx={{ marginTop: "8px" }}>Selected Seats: {selectedSeats.join(", ") || "None"}</Typography>
+                      <Typography variant="body1" sx={{ marginTop: "8px" }}>Date: {date}</Typography>
+                    </Box>
+                  </Box>
+                  <Box display="flex" gap={2}>
+                    <Button onClick={handleCancel} variant="contained" sx={{ height: "40px", width: "200px", backgroundColor: "red", color: "white", '&:hover': { backgroundColor: "darkred" } }}>
+                      Cancel Booking
+                    </Button>
+                    <Button type="submit" variant="contained" color="primary" sx={{ height: "40px", width: "200px" }}>
+                      Book Now
+                    </Button>
                   </Box>
                 </Box>
               </form>
               {error && <Typography color="error">{error}</Typography>}
-            </Box>
-          </Box>
-          <Box display="flex" justifyContent="space-between" alignItems="center" marginTop={5} padding={2} className="poster-info">
-            <Box display="flex" alignItems="center">
-              <img className="poster-image" style={{ width: "100px", height: "150px" }} src={movie.posterUrl} alt={movie.title} />
-              <Box marginLeft={2}>
-                <Typography variant="h6" fontWeight="bold">{movie.title}</Typography>
-                <Typography>Price: {totalCost} ₫</Typography>
-                <Typography variant="body1" sx={{ marginTop: "8px" }}>Selected Seats: {selectedSeats.join(", ") || "None"}</Typography>
-              </Box>
-            </Box>
-            <Box display="flex" gap={2}>
-              <Button onClick={handleCancel} variant="contained" sx={{ height: "40px", width: "200px", backgroundColor: "red", color: "white", '&:hover': { backgroundColor: "darkred" } }}>
-                Cancel Booking
-              </Button>
-              <Button type="submit" variant="contained" color="primary" sx={{ height: "40px", width: "200px" }}>
-                Book Now
-              </Button>
             </Box>
           </Box>
         </div>
