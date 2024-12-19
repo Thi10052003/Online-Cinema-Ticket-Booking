@@ -2,37 +2,26 @@ import mongoose from "mongoose";
 
 const movieSchema = new mongoose.Schema(
   {
-    title: {
-      type: String,
-      required: true,
-    },
-    description: {
-      type: String,
-      required: true,
-    },
+    title: { type: String, required: true },
+    description: { type: String, required: true },
     actors: [{ type: String, required: true }],
-    releaseDate: {
-      type: Date,
-      required: true,
-    },
-    posterUrl: {
-      type: String,
-      required: true,
-    },
-    featured: {
-      type: Boolean,
-      default: false, // Default to false
-    },
-    bookings: [
-      { type: mongoose.Types.ObjectId, ref: "Booking" }, // Reference to Booking model
+    releaseDate: { type: Date, required: true },
+    posterUrl: { type: String, required: true },
+    featured: { type: Boolean, default: false },
+    bookings: [{ type: mongoose.Types.ObjectId, ref: "Booking" }],
+    occupiedSeats: [
+      {
+        seat: { type: String },
+        date: { type: String},
+        showtime: { type: String},
+      },
     ],
-    occupiedSeats: { type: [String], default: [] },
   },
-  { timestamps: true } // Enable createdAt and updatedAt timestamps
+  { timestamps: true }
 );
 
-// Add indexes for commonly queried fields
+// Indexing for performance
 movieSchema.index({ title: 1 });
-movieSchema.index({ featured: 1 });
+movieSchema.index({ "occupiedSeats.date": 1, "occupiedSeats.showtime": 1 });
 
 export default mongoose.model("Movie", movieSchema);

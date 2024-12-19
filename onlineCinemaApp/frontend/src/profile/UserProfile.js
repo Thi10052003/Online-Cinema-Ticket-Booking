@@ -65,12 +65,24 @@ const UserProfile = () => {
   );
 
   return (
-    <Box width={"100%"} display="flex" flexDirection="column" padding={2} sx={{ backgroundColor: "#000", minHeight: "100vh" }}>
+    <Box
+      width={"100%"}
+      display="flex"
+      flexDirection="column"
+      padding={3}
+      sx={{
+        backgroundColor: "#000",
+        minHeight: "100vh",
+        alignItems: "center",
+      }}
+    >
       <Fragment>
         {/* Error State */}
         {error && (
-          <Box display="flex" justifyContent="center" alignItems="center" mb={3}>
-            <Alert severity="error">{error}</Alert>
+          <Box mb={3}>
+            <Alert severity="error" variant="filled">
+              {error}
+            </Alert>
           </Box>
         )}
 
@@ -80,46 +92,54 @@ const UserProfile = () => {
             display="flex"
             flexDirection="column"
             alignItems="center"
-            width="100%"
             mb={5}
-            sx={{ border: "1px solid #ccc", borderRadius: 4, padding: 3, backgroundColor: "#000" }}
+            sx={{
+              backgroundColor: "#1e1e1e",
+              borderRadius: 4,
+              padding: 4,
+              boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.8)",
+              width: "100%",
+              maxWidth: "600px",
+              textAlign: "center",
+            }}
           >
-            <AccountCircleIcon sx={{ fontSize: "5rem", color: "#fff" }} />
-            <Typography variant="h5" fontWeight="bold" mt={1} color="white">
+            <AccountCircleIcon sx={{ fontSize: "6rem", color: "#fff" }} />
+            <Typography
+              variant="h5"
+              fontWeight="bold"
+              mt={2}
+              color="white"
+            >
               {user.name}
             </Typography>
             <Typography variant="body1" color="gray">
               {user.email}
             </Typography>
-            <Button
-              variant="contained"
-              color="primary"
-              sx={{ mt: 2 }}
-              onClick={() => console.log("Edit Profile Clicked")}
-            >
-              Edit Profile
-            </Button>
           </Box>
         )}
 
         {/* Search Bar */}
-        <Box display="flex" justifyContent="center" mb={3}>
+        <Box display="flex" justifyContent="center" mb={3} width="100%">
           <TextField
             placeholder="Search by movie name"
             variant="outlined"
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
             fullWidth
-            sx={{ maxWidth: 600, backgroundColor: "#222", color: "#fff", borderRadius: "4px" }}
+            sx={{
+              maxWidth: "600px",
+              backgroundColor: "#222",
+              color: "#fff",
+              borderRadius: "4px",
+            }}
             inputProps={{ style: { color: "white" } }}
           />
         </Box>
 
         {/* Bookings List */}
-        <Box>
+        <Box width="100%">
           <Typography
             variant="h4"
-            fontFamily={"verdana"}
             textAlign="center"
             mb={3}
             color="white"
@@ -131,8 +151,11 @@ const UserProfile = () => {
               display="flex"
               flexDirection="column"
               alignItems="center"
-              gap={2}
-              sx={{ backgroundColor: "#000" }}
+              gap={3}
+              sx={{
+                width: "100%",
+                maxWidth: "800px",
+              }}
             >
               {filteredBookings.map((booking) => (
                 <Box
@@ -140,21 +163,20 @@ const UserProfile = () => {
                   display="flex"
                   alignItems="center"
                   width="100%"
-                  maxWidth={800}
                   padding={2}
                   sx={{
-                    boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+                    backgroundColor: "#1e1e1e",
                     borderRadius: "8px",
-                    backgroundColor: "#111",
+                    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.5)",
                   }}
                 >
                   <img
                     src={booking.movie.posterUrl}
                     alt={booking.movie.title}
                     style={{
-                      width: "80px",
-                      height: "120px",
-                      borderRadius: "4px",
+                      width: "100px",
+                      height: "150px",
+                      borderRadius: "8px",
                     }}
                   />
                   <Box ml={3} flexGrow={1}>
@@ -165,7 +187,8 @@ const UserProfile = () => {
                       Seat: {booking.seatNumber}
                     </Typography>
                     <Typography variant="body2" color="gray">
-                      Date: {new Date(booking.date).toLocaleString() || "Invalid Date"}
+                      Date:{" "}
+                      {new Date(booking.dates).toLocaleString() || "Invalid Date"}
                     </Typography>
                   </Box>
                   <Tooltip title="Delete Booking">
@@ -181,11 +204,6 @@ const UserProfile = () => {
             </Box>
           ) : (
             <Box textAlign="center" mt={5}>
-              {/* <img
-                src="/assets/no-bookings.svg"
-                alt="No bookings"
-                style={{ width: "200px" }}
-              /> */}
               <Typography variant="h6" color="gray" mt={2}>
                 You have no bookings yet.
               </Typography>
@@ -194,7 +212,10 @@ const UserProfile = () => {
                 color="primary"
                 component={Link}
                 to="/movies"
-                sx={{ mt: 2 }}
+                sx={{
+                  mt: 2,
+                  "&:hover": { backgroundColor: "#303f9f" },
+                }}
               >
                 Book Now
               </Button>

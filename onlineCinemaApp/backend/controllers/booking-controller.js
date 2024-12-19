@@ -3,81 +3,79 @@ import Bookings from "../models/Bookings.js";
 import Movie from "../models/Movie.js";
 import User from "../models/User.js";
 
-// Updated newBooking with occupiedSeats logic
 export const newBooking = async (req, res, next) => {
-  const { movie, seatNumber, user } = req.body;
+  const { movie, seatNumber, user, selectedDate, selectedShowtime } = req.body;
 
-  // Validate inputs
-  if (!movie || !seatNumber || !user) {
+  if (!movie || !seatNumber || !user || !selectedDate || !selectedShowtime) {
     return res.status(400).json({ message: "All fields are required." });
   }
 
-  try {
-    const session = await mongoose.startSession();
-    session.startTransaction();
+  const session = await mongoose.startSession();
+  session.startTransaction();
 
-    // Check if movie and user exist
+  try {
     const [existingMovie, existingUser] = await Promise.all([
       Movie.findById(movie).session(session),
       User.findById(user).session(session),
     ]);
 
-    if (!existingMovie) {
-      await session.abortTransaction();
-      session.endSession();
-      return res.status(404).json({ message: "Movie not found with the given ID." });
+    if (!existingMovie || !existingUser) {
+      throw new Error("Movie or User not found.");
     }
 
-    if (!existingUser) {
-      await session.abortTransaction();
-      session.endSession();
-      return res.status(404).json({ message: "User not found with the given ID." });
-    }
-
-    // Validate seat occupancy
     const seatNumbers = Array.isArray(seatNumber) ? seatNumber : [seatNumber];
     const isSeatOccupied = seatNumbers.some((seat) =>
-      existingMovie.occupiedSeats.includes(seat)
+      existingMovie.occupiedSeats?.some(
+        (occupied) =>
+          occupied.seat === seat &&
+          occupied.date === selectedDate &&
+          occupied.showtime === selectedShowtime
+      )
     );
 
     if (isSeatOccupied) {
-      await session.abortTransaction();
-      session.endSession();
-      return res.status(400).json({ message: "One or more seats are already occupied." });
+      throw new Error("One or more seats are already occupied.");
     }
 
-    // Create a new booking
+    // Add new booking
     const booking = new Bookings({
       movie,
       seatNumber: seatNumbers,
       user,
+      selectedDate,
+      selectedShowtime,
     });
 
-    // Add booking references to user and movie
     existingUser.bookings.push(booking._id);
     existingMovie.bookings.push(booking._id);
 
-    // Update occupiedSeats in the movie
-    existingMovie.occupiedSeats.push(...seatNumbers);
+    // Update occupied seats
+    seatNumbers.forEach((seat) => {
+      existingMovie.occupiedSeats.push({
+        seat,
+        date: selectedDate,
+        showtime: selectedShowtime,
+      });
+    });
 
-    // Save all entities within the transaction
     await Promise.all([
-      existingUser.save({ session }),
-      existingMovie.save({ session }),
       booking.save({ session }),
+      existingMovie.save({ session }),
+      existingUser.save({ session }),
     ]);
 
     await session.commitTransaction();
-    session.endSession();
-
     return res.status(201).json({ booking });
   } catch (err) {
+    await session.abortTransaction();
     console.error("Error creating booking:", err);
-    return res.status(500).json({ message: "Internal server error." });
+    return res.status(500).json({ message: err.message || "Internal server error." });
+  } finally {
+    session.endSession();
   }
 };
 
-// Get booking by ID (unchanged)
+
 export const getBookingById = async (req, res, next) => {
   const id = req.params.id;
 
@@ -95,14 +93,13 @@ export const getBookingById = async (req, res, next) => {
   }
 };
 
-// Updated deleteBooking with occupiedSeats logic
 export const deleteBooking = async (req, res, next) => {
   const id = req.params.id;
 
-  try {
-    const session = await mongoose.startSession();
-    session.startTransaction();
+  const session = await mongoose.startSession();
+  session.startTransaction();
 
+  try {
     // Find booking and populate references
     const booking = await Bookings.findById(id)
       .populate("user")
@@ -110,21 +107,22 @@ export const deleteBooking = async (req, res, next) => {
       .session(session);
 
     if (!booking) {
-      await session.abortTransaction();
-      session.endSession();
-      return res.status(404).json({ message: "Booking not found." });
+      throw new Error("Booking not found.");
     }
 
     // Remove references from user and movie
-    await booking.user.bookings.pull(booking._id);
-    await booking.movie.bookings.pull(booking._id);
+    booking.user.bookings.pull(booking._id);
+    booking.movie.bookings.pull(booking._id);
 
     // Remove seat(s) from occupiedSeats in the movie
     const seatNumbers = Array.isArray(booking.seatNumber)
       ? booking.seatNumber
       : [booking.seatNumber];
     booking.movie.occupiedSeats = booking.movie.occupiedSeats.filter(
-      (seat) => !seatNumbers.includes(seat)
+      (occupied) =>
+        !seatNumbers.includes(occupied.seat) ||
+        occupied.date !== booking.selectedDate ||
+        occupied.showtime !== booking.selectedShowtime
     );
 
     // Save updates and delete booking
@@ -135,11 +133,12 @@ export const deleteBooking = async (req, res, next) => {
     ]);
 
     await session.commitTransaction();
-    session.endSession();
-
-    return res.status(200).json({ message: "Successfully Deleted" });
+    return res.status(200).json({ message: "Successfully deleted booking." });
   } catch (err) {
+    await session.abortTransaction();
     console.error("Error deleting booking:", err);
-    return res.status(500).json({ message: "Internal server error." });
+    return res.status(500).json({ message: err.message || "Internal server error." });
+  } finally {
+    session.endSession();
   }
 };

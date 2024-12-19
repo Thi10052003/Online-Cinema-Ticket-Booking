@@ -37,13 +37,21 @@ export const getMovieDetails = async (id) => {
   }
 };
 
-// Create a new booking
 export const newBooking = async (data) => {
   try {
+    console.log("Payload sent to booking API:", {
+      movie: data.movie,
+      seatNumber: data.seatNumber,
+      user: localStorage.getItem("userId"),
+      selectedDate: data.selectedDate,
+      selectedShowtime: data.selectedShowtime,
+    });
     const res = await axios.post("/booking", {
-      movie: data.movie,       // Ensure movie ID is correctly passed
-      seatNumber: data.seatNumber, // Ensure seat numbers are correct
-      user: localStorage.getItem("userId"), // Ensure user ID is stored in localStorage
+      movie: data.movie,
+      seatNumber: data.seatNumber,
+      user: localStorage.getItem("userId"),
+      selectedDate: data.selectedDate,
+      selectedShowtime: data.selectedShowtime,
     });
     return res.data;
   } catch (err) {
@@ -51,6 +59,8 @@ export const newBooking = async (data) => {
     throw new Error(err.response?.data?.message || "Booking failed");
   }
 };
+
+
 
 
 // Fetch user bookings

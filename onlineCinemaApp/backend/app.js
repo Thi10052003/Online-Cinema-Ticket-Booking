@@ -5,29 +5,54 @@ import userRouter from "./routes/user-routes.js";
 import movieRouter from "./routes/movie-routes.js";
 import bookingsRouter from "./routes/booking-routes.js";
 import cors from "cors";
+
 dotenv.config();
+
 const app = express();
+const PORT = process.env.PORT || 5001; // Use environment variable for PORT
+
+// Middleware
 app.use(cors());
-// middlewares
 app.use(express.json());
 app.use("/user", userRouter);
 app.use("/movie", movieRouter);
 app.use("/booking", bookingsRouter);
+
+// CORS headers
 app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
+// MongoDB Connection
+const MONGO_URI = `mongodb+srv://admin:${process.env.MONGODB_PASSWORD}@cluster0.shxan.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
+
+mongoose
+  .connect(MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    retryWrites: true, // Ensures transactions can be retried
+    w: "majority", // Guarantees write acknowledgment
+  })
+  .then(() => {
+    console.log("Connected to MongoDB successfully.");
+    app.listen(PORT, () =>
+      console.log(`Server is running on http://localhost:${PORT}`)
+    );
+  })
+  .catch((err) => {
+    console.error("Database connection error:", err.message);
+    process.exit(1); // Exit process on database connection failure
   });
-  
 
-mongoose.connect(
-    `mongodb+srv://admin:${process.env.MONGODB_PASSWORD}@cluster0.shxan.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
-).then(
-    () => app.listen(
-        5001,
-        () => console.log("Connected To Database And Server is Running")
-    )
-).catch((e) => console.log(e));
+// Handle uncaught exceptions and unhandled rejections
+process.on("uncaughtException", (err) => {
+  console.error("Uncaught Exception:", err);
+  process.exit(1);
+});
 
-//3q7T43rbE.aL_nu
-//mongodb+srv://admin:<db_password>@cluster0.shxan.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0---
+process.on("unhandledRejection", (err) => {
+  console.error("Unhandled Rejection:", err);
+  process.exit(1);
+});

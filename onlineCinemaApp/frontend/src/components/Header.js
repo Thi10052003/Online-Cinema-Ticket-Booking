@@ -39,7 +39,15 @@ const Header = () => {
     };
 
     return (
-        <AppBar position="sticky" sx={{ bgcolor: "#222222" }}>
+        <AppBar
+    position="sticky"
+    sx={{
+        background: "linear-gradient(0deg, rgba(0,0,0,0.8), rgba(255,255,255,0.8))",
+        boxShadow: "none",
+    }}
+>
+
+
             <Toolbar>
                 <Box width="20%">
                     <Link to="/">

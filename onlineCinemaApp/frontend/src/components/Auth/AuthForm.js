@@ -73,15 +73,15 @@ const AuthForm = React.memo(({ onSubmit, isAdmin }) => {
   return (
     <Box
       display="flex"
-      justifyContent="flex-start"
+      justifyContent="center"
       alignItems="center"
       height="100vh"
       padding={3}
       sx={{
-        marginTop: "-80px",
+        background: "#000",
       }}
     >
-      {/* Left side for form */}
+      {/* Centered Form Box */}
       <Box
         bgcolor="#000"
         borderRadius={5}
@@ -225,21 +225,6 @@ const AuthForm = React.memo(({ onSubmit, isAdmin }) => {
               </Link>
             </span>
           )}
-        </Typography>
-      </Box>
-
-      {/* Right side space for other content */}
-      <Box
-        display="flex"
-        flexDirection="column"
-        justifyContent="center"
-        alignItems="center"
-        flex={1}
-        bgcolor="#f5f5f5"
-      >
-        {/* Add your other content here */}
-        <Typography variant="h6" textAlign="center" color="#333">
-          {/* Other content */}
         </Typography>
       </Box>
     </Box>

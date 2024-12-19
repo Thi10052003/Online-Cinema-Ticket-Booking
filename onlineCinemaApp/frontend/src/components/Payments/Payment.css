@@ -1,25 +1,86 @@
+/* General body styling */
 body {
-    background-color: #121212;
-    color: #fff;
-  }
-  
+  background-color: #121212; /* Black background */
+  color: #fff; /* White text for contrast */
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* Main payment container */
+.payment-container {
+  background-color: #1e1e1e; /* Slightly lighter black for contrast */
+  padding: 2rem;
+  border-radius: 10px;
+  color: #fff;
+  text-align: center;
+  width: 100%;
+  max-width: 600px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+}
+
+/* Title styling */
+.payment-container h4 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  font-weight: bold;
+  color: #fff;
+}
+
+/* Subtitle styling */
+.payment-container h6 {
+  font-size: 1.2rem;
+  margin-bottom: 0.8rem;
+  color: #ccc; /* Subtle white for secondary information */
+}
+
+/* Button styling */
+button {
+  background-color: #90caf9; /* Blue for primary actions */
+  color: #121212; /* Black text for contrast */
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #64b5f6; /* Lighter blue on hover */
+}
+
+/* QR Code and Barcode */
+img {
+  border-radius: 10px;
+  max-width: 100%; /* Ensure images fit within their containers */
+  margin-top: 1rem;
+}
+
+/* Success and error text */
+.success-text {
+  color: #4caf50; /* Green for success messages */
+  margin-top: 1rem;
+}
+
+.error-text {
+  color: #f44336; /* Red for error messages */
+  margin-top: 1rem;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
   .payment-container {
-    background-color: #1e1e1e;
-    padding: 2rem;
-    border-radius: 10px;
-    color: #fff;
-    text-align: center;
+    padding: 1.5rem;
   }
-  
+
   button {
-    background-color: #90caf9;
-    color: #121212;
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
   }
-  
-  button:hover {
-    background-color: #64b5f6;
-  }
-  
-  img {
-    border-radius: 10px;
-  }
+}
