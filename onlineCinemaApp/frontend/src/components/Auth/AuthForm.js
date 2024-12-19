@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
-import { Box, Typography, FormLabel, TextField, Button, Link } from '@mui/material';
+import React, { useState } from "react";
+import { Box, Typography, FormLabel, TextField, Button, Link, Alert, Collapse } from "@mui/material";
 
-const AuthForm = ({ onSubmit, isAdmin }) => {
+const AuthForm = React.memo(({ onSubmit, isAdmin }) => {
   const [inputs, setInputs] = useState({
-    name: '',
-    email: '',
-    password: '',
+    name: "",
+    email: "",
+    password: "",
   });
   const [isSignup, setIsSignup] = useState(false); // Track whether it's signup or login
+  const [errors, setErrors] = useState({}); // Track validation errors
+  const [loginSuccess, setLoginSuccess] = useState(false); // Track login success state
 
   // Handle input changes
   const handleChange = (e) => {
@@ -15,17 +17,57 @@ const AuthForm = ({ onSubmit, isAdmin }) => {
       ...prevState,
       [e.target.name]: e.target.value,
     }));
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [e.target.name]: "", // Clear error when user starts typing
+    }));
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit({ inputs, signup: isAdmin ? false : isSignup }); // Pass signup based on isAdmin or isSignup
+    const validationErrors = {};
+
+    // Check for empty fields
+    if (!inputs.email) validationErrors.email = "Please fill in your Email Address";
+    if (!inputs.password) validationErrors.password = "Please fill in your Password";
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    try {
+      await onSubmit({ inputs, signup: isAdmin ? false : isSignup }); // Simulate login or signup
+      setLoginSuccess(true); // Show success message
+      setTimeout(() => setLoginSuccess(false), 3000); // Hide success message after 3 seconds
+    } catch (error) {
+      console.error("Login failed:", error); // Handle login failure
+    }
   };
 
   // Toggle between Signup and Login
   const toggleForm = () => {
     setIsSignup(!isSignup);
+    setErrors({}); // Clear errors when toggling forms
+  };
+
+  // Shared text field styles
+  const textFieldStyles = {
+    backgroundColor: "#000",
+    borderRadius: 2,
+    "& .MuiOutlinedInput-root": {
+      "& fieldset": {
+        borderColor: "#ccc",
+      },
+      "&:hover fieldset": {
+        borderColor: "#888",
+      },
+    },
+    "& .MuiInputBase-input": {
+      color: "#fff",
+    },
+    marginBottom: "16px",
   };
 
   return (
@@ -36,7 +78,7 @@ const AuthForm = ({ onSubmit, isAdmin }) => {
       height="100vh"
       padding={3}
       sx={{
-        marginTop: '-80px',
+        marginTop: "-80px",
       }}
     >
       {/* Left side for form */}
@@ -50,7 +92,7 @@ const AuthForm = ({ onSubmit, isAdmin }) => {
         flexDirection="column"
         alignItems="center"
         sx={{
-          border: '1px solid #ddd',
+          border: "1px solid #ddd",
         }}
       >
         {/* Title */}
@@ -59,16 +101,23 @@ const AuthForm = ({ onSubmit, isAdmin }) => {
           textAlign="center"
           mb={3}
           sx={{
-            fontWeight: 'bold',
-            color: '#fff',
+            fontWeight: "bold",
+            color: "#fff",
           }}
         >
-          {isSignup ? 'Sign Up' : 'Login'}
+          {isSignup ? "Sign Up" : "Login"}
         </Typography>
 
+        {/* Success Message */}
+        <Collapse in={loginSuccess}>
+          <Alert severity="success" sx={{ marginBottom: 2 }}>
+            Login successful!
+          </Alert>
+        </Collapse>
+
         {/* Form Fields */}
-        <form onSubmit={handleSubmit} style={{ width: '100%' }}>
-          <FormLabel sx={{ fontWeight: 'bold', color: '#fff' }}>Email Address</FormLabel>
+        <form onSubmit={handleSubmit} style={{ width: "100%" }}>
+          <FormLabel sx={{ fontWeight: "bold", color: "#fff" }}>Email Address</FormLabel>
           <TextField
             type="email"
             name="email"
@@ -77,27 +126,14 @@ const AuthForm = ({ onSubmit, isAdmin }) => {
             fullWidth
             margin="normal"
             variant="outlined"
-            sx={{
-              backgroundColor: '#000',
-              borderRadius: 2,
-              '& .MuiOutlinedInput-root': {
-                '& fieldset': {
-                  borderColor: '#ccc',
-                },
-                '&:hover fieldset': {
-                  borderColor: '#888',
-                },
-              },
-              '& .MuiInputBase-input': {
-                color: '#fff',
-              },
-              marginBottom: '16px',
-            }}
+            sx={textFieldStyles}
+            error={!!errors.email}
+            helperText={errors.email}
           />
 
           {isSignup && (
             <>
-              <FormLabel sx={{ fontWeight: 'bold', color: '#fff' }}>Username</FormLabel>
+              <FormLabel sx={{ fontWeight: "bold", color: "#fff" }}>Username</FormLabel>
               <TextField
                 type="text"
                 name="name"
@@ -106,27 +142,14 @@ const AuthForm = ({ onSubmit, isAdmin }) => {
                 fullWidth
                 margin="normal"
                 variant="outlined"
-                sx={{
-                  backgroundColor: '#000',
-                  borderRadius: 2,
-                  '& .MuiOutlinedInput-root': {
-                    '& fieldset': {
-                      borderColor: '#ccc',
-                    },
-                    '&:hover fieldset': {
-                      borderColor: '#888',
-                    },
-                  },
-                  '& .MuiInputBase-input': {
-                    color: '#fff',
-                  },
-                  marginBottom: '16px',
-                }}
+                sx={textFieldStyles}
+                error={!!errors.name}
+                helperText={errors.name}
               />
             </>
           )}
 
-          <FormLabel sx={{ fontWeight: 'bold', color: '#fff' }}>Password</FormLabel>
+          <FormLabel sx={{ fontWeight: "bold", color: "#fff" }}>Password</FormLabel>
           <TextField
             type="password"
             name="password"
@@ -135,22 +158,9 @@ const AuthForm = ({ onSubmit, isAdmin }) => {
             fullWidth
             margin="normal"
             variant="outlined"
-            sx={{
-              backgroundColor: '#000',
-              borderRadius: 2,
-              '& .MuiOutlinedInput-root': {
-                '& fieldset': {
-                  borderColor: '#ccc',
-                },
-                '&:hover fieldset': {
-                  borderColor: '#888',
-                },
-              },
-              '& .MuiInputBase-input': {
-                color: '#fff',
-              },
-              marginBottom: '16px',
-            }}
+            sx={textFieldStyles}
+            error={!!errors.password}
+            helperText={errors.password}
           />
 
           <Button
@@ -158,17 +168,17 @@ const AuthForm = ({ onSubmit, isAdmin }) => {
             fullWidth
             sx={{
               marginTop: 3,
-              padding: '12px',
-              background: 'linear-gradient(90deg, #628EFF 0%, #8740CD 53%, #580475 100%)',
+              padding: "12px",
+              background: "linear-gradient(90deg, #628EFF 0%, #8740CD 53%, #580475 100%)",
               borderRadius: 3,
-              '&:hover': {
-                background: 'linear-gradient(90deg, #580475 0%, #8740CD 53%, #628EFF 100%)',
+              "&:hover": {
+                background: "linear-gradient(90deg, #580475 0%, #8740CD 53%, #628EFF 100%)",
               },
-              fontWeight: 'bold',
+              fontWeight: "bold",
             }}
             type="submit"
           >
-            {isSignup ? 'Sign Up' : 'Login'}
+            {isSignup ? "Sign Up" : "Login"}
           </Button>
         </form>
 
@@ -177,20 +187,20 @@ const AuthForm = ({ onSubmit, isAdmin }) => {
           variant="body2"
           mt={2}
           sx={{
-            color: '#666',
+            color: "#666",
           }}
         >
           {isSignup ? (
             <span>
-              Already have an account?{' '}
+              Already have an account?{" "}
               <Link
                 component="button"
                 variant="body2"
                 sx={{
-                  color: '#7CC1F3',
-                  textDecoration: 'none',
-                  cursor: 'pointer',
-                  fontWeight: 'bold',
+                  color: "#7CC1F3",
+                  textDecoration: "none",
+                  cursor: "pointer",
+                  fontWeight: "bold",
                 }}
                 onClick={toggleForm}
               >
@@ -199,15 +209,15 @@ const AuthForm = ({ onSubmit, isAdmin }) => {
             </span>
           ) : (
             <span>
-              Don't have an account?{' '}
+              Don't have an account?{" "}
               <Link
                 component="button"
                 variant="body2"
                 sx={{
-                  color: '#7CC1F3',
-                  textDecoration: 'none',
-                  cursor: 'pointer',
-                  fontWeight: 'bold',
+                  color: "#7CC1F3",
+                  textDecoration: "none",
+                  cursor: "pointer",
+                  fontWeight: "bold",
                 }}
                 onClick={toggleForm}
               >
@@ -234,6 +244,6 @@ const AuthForm = ({ onSubmit, isAdmin }) => {
       </Box>
     </Box>
   );
-};
+});
 
 export default AuthForm;

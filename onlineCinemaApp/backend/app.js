@@ -2,7 +2,6 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import userRouter from "./routes/user-routes.js";
-import adminRouter from "./routes/admin-routes.js";
 import movieRouter from "./routes/movie-routes.js";
 import bookingsRouter from "./routes/booking-routes.js";
 import cors from "cors";
@@ -12,10 +11,14 @@ app.use(cors());
 // middlewares
 app.use(express.json());
 app.use("/user", userRouter);
-app.use("/admin", adminRouter);
 app.use("/movie", movieRouter);
 app.use("/booking", bookingsRouter);
-
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+  });
+  
 
 mongoose.connect(
     `mongodb+srv://admin:${process.env.MONGODB_PASSWORD}@cluster0.shxan.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`

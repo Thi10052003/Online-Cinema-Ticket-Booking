@@ -1,8 +1,11 @@
-import { Button, Card, CardContent, Typography, Box } from '@mui/material';
 import React from 'react';
+import { Card, CardContent, Box, Typography, Button } from "@mui/material";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const MovieItem = ({ title, releaseDate, posterUrl, id }) => {
+    const isUserLoggedIn = useSelector((state) => state.user.isLoggedIn);
+
     return (
         <Card
             sx={{
@@ -14,11 +17,10 @@ const MovieItem = ({ title, releaseDate, posterUrl, id }) => {
                 flexDirection: 'column',
                 margin: 2,
                 transition: 'box-shadow 0.3s ease',
-                position: 'relative',  // Makes sure the absolute positioning of title/button works
+                position: 'relative',
                 overflow: 'hidden',
                 '&:hover': {
                     boxShadow: '10px 10px 20px #ccc',
-                    // Make title and button box visible on hover
                     '& .overlay': { 
                         visibility: 'visible',
                         opacity: 1,
@@ -35,45 +37,48 @@ const MovieItem = ({ title, releaseDate, posterUrl, id }) => {
                         width: '100%',
                         height: '100%',
                         objectFit: 'cover',
-                        borderRadius: '5px 5px 0 0', // Rounded top corners
+                        borderRadius: '5px 5px 0 0',
                     }}
                 />
             </CardContent>
 
             {/* Title and Button Section */}
             <Box
-                className="overlay"  // Add a class to target this element
+                className="overlay"
                 sx={{
                     position: 'absolute',
-                    bottom: 0, // Position it at the bottom of the card
+                    bottom: 0,
                     left: 0,
                     right: 0,
-                    backgroundColor: 'rgba(0, 0, 0, 0.6)', // Dark overlay for the bottom section
+                    backgroundColor: 'rgba(0, 0, 0, 0.6)',
                     color: '#fff',
-                    visibility: 'hidden',  // Initially hidden
-                    opacity: 0, // Hidden by default
-                    transition: 'visibility 0s, opacity 0.3s ease', // Smooth transition for opacity
+                    visibility: 'hidden',
+                    opacity: 0,
+                    transition: 'visibility 0s, opacity 0.3s ease',
                     padding: 2,
                     textAlign: 'center',
-                    zIndex: 1, // Ensures it's above the image
+                    zIndex: 1,
                 }}
             >
                 <Typography variant="h6" component="div" sx={{ marginBottom: '8px' }}>
                     {title}
                 </Typography>
-                <Button variant="contained"
+                <Button
+                    variant="contained"
                     fullWidth
                     LinkComponent={Link}
-                    to={`/booking/${id}`}
+                    to={isUserLoggedIn ? `/booking/${id}` : '/auth'}
                     sx={{
-                    margin: "auto",
-                    bgcolor: "#2b2d42",
-                    ":hover": {
-                        bgcolor: "#121217",
+                        margin: "auto",
+                        bgcolor: "#2b2d42",
+                        ":hover": {
+                            bgcolor: "#121217",
                         },
                     }}
                     size="small"
-                >Book</Button>
+                >
+                    {isUserLoggedIn ? "Book" : "Book"}
+                </Button>
             </Box>
         </Card>
     );

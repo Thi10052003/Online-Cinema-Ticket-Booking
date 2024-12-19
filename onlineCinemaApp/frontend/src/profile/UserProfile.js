@@ -1,5 +1,4 @@
-import { Box } from "@mui/system";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState, useCallback } from "react";
 import {
   deleteBooking,
   getUserBooking,
@@ -8,118 +7,200 @@ import {
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import {
   IconButton,
-  List,
-  ListItem,
-  ListItemText,
+  Box,
   Typography,
+  Alert,
+  Button,
+  TextField,
+  Tooltip,
 } from "@mui/material";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-const UserProfile = () => {
-  const [bookings, setBookings] = useState();
-  const [user, setUser] = useState();
-  useEffect(() => {
-    getUserBooking()
-      .then((res) => setBookings(res.bookings))
-      .catch((err) => console.log(err));
+import { Link } from "react-router-dom";
 
-    getUserDetails()
-      .then((res) => setUser(res.user))
-      .catch((err) => console.log(err));
+const UserProfile = () => {
+  const [bookings, setBookings] = useState([]);
+  const [user, setUser] = useState(null);
+  const [error, setError] = useState(null);
+  const [searchValue, setSearchValue] = useState("");
+
+  // Fetch user and bookings data concurrently
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [bookingResponse, userResponse] = await Promise.all([
+          getUserBooking(),
+          getUserDetails(),
+        ]);
+        setBookings(bookingResponse.bookings);
+        setUser(userResponse.user);
+        setError(null);
+      } catch (err) {
+        console.error(err);
+        setError("Failed to fetch user data or bookings.");
+      }
+    };
+
+    fetchData();
   }, []);
-  const handleDelete = (id) => {
-    deleteBooking(id)
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
-  };
+
+  // Handle delete booking action
+  const handleDelete = useCallback(
+    async (id) => {
+      try {
+        await deleteBooking(id);
+        setBookings((prevBookings) =>
+          prevBookings.filter((booking) => booking._id !== id)
+        );
+      } catch (err) {
+        console.error(err);
+        setError("Failed to delete the booking. Please try again.");
+      }
+    },
+    [setBookings]
+  );
+
+  // Filter bookings based on search value
+  const filteredBookings = bookings.filter((booking) =>
+    booking.movie.title.toLowerCase().includes(searchValue.toLowerCase())
+  );
+
   return (
-    <Box width={"100%"} display="flex">
+    <Box width={"100%"} display="flex" flexDirection="column" padding={2} sx={{ backgroundColor: "#000", minHeight: "100vh" }}>
       <Fragment>
-        {" "}
-        {user && (
-          <Box
-            flexDirection={"column"}
-            justifyContent="center"
-            alignItems={"center"}
-            width={"30%"}
-            padding={3}
-          >
-            <AccountCircleIcon
-              sx={{ fontSize: "10rem", textAlign: "center", ml: 3 }}
-            />
-            <Typography
-              padding={1}
-              width={"auto"}
-              textAlign={"center"}
-              border={"1px solid #ccc"}
-              borderRadius={6}
-            >
-              Name: {user.name}
-            </Typography>
-            <Typography
-              mt={1}
-              padding={1}
-              width={"auto"}
-              textAlign={"center"}
-              border={"1px solid #ccc"}
-              borderRadius={6}
-            >
-              Email: {user.email}
-            </Typography>
+        {/* Error State */}
+        {error && (
+          <Box display="flex" justifyContent="center" alignItems="center" mb={3}>
+            <Alert severity="error">{error}</Alert>
           </Box>
         )}
-        {bookings && (
-          <Box width={"70%"} display="flex" flexDirection={"column"}>
-            <Typography
-              variant="h3"
-              fontFamily={"verdana"}
-              textAlign="center"
-              padding={2}
-            >
-              Bookings
+
+        {/* User Details Section */}
+        {user && (
+          <Box
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            width="100%"
+            mb={5}
+            sx={{ border: "1px solid #ccc", borderRadius: 4, padding: 3, backgroundColor: "#000" }}
+          >
+            <AccountCircleIcon sx={{ fontSize: "5rem", color: "#fff" }} />
+            <Typography variant="h5" fontWeight="bold" mt={1} color="white">
+              {user.name}
             </Typography>
-            <Box
-              margin={"auto"}
-              display="flex"
-              flexDirection={"column"}
-              width="80%"
+            <Typography variant="body1" color="gray">
+              {user.email}
+            </Typography>
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{ mt: 2 }}
+              onClick={() => console.log("Edit Profile Clicked")}
             >
-              <List>
-                {bookings.map((booking, index) => (
-                  <ListItem
-                    sx={{
-                      bgcolor: "#00d386",
-                      color: "white",
-                      textAlign: "center",
-                      margin: 1,
+              Edit Profile
+            </Button>
+          </Box>
+        )}
+
+        {/* Search Bar */}
+        <Box display="flex" justifyContent="center" mb={3}>
+          <TextField
+            placeholder="Search by movie name"
+            variant="outlined"
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+            fullWidth
+            sx={{ maxWidth: 600, backgroundColor: "#222", color: "#fff", borderRadius: "4px" }}
+            inputProps={{ style: { color: "white" } }}
+          />
+        </Box>
+
+        {/* Bookings List */}
+        <Box>
+          <Typography
+            variant="h4"
+            fontFamily={"verdana"}
+            textAlign="center"
+            mb={3}
+            color="white"
+          >
+            My Bookings
+          </Typography>
+          {filteredBookings.length > 0 ? (
+            <Box
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+              gap={2}
+              sx={{ backgroundColor: "#000" }}
+            >
+              {filteredBookings.map((booking) => (
+                <Box
+                  key={booking._id}
+                  display="flex"
+                  alignItems="center"
+                  width="100%"
+                  maxWidth={800}
+                  padding={2}
+                  sx={{
+                    boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+                    borderRadius: "8px",
+                    backgroundColor: "#111",
+                  }}
+                >
+                  <img
+                    src={booking.movie.posterUrl}
+                    alt={booking.movie.title}
+                    style={{
+                      width: "80px",
+                      height: "120px",
+                      borderRadius: "4px",
                     }}
-                  >
-                    <ListItemText
-                      sx={{ margin: 1, width: "auto", textAlign: "left" }}
-                    >
-                      Movie: {booking.movie.title}
-                    </ListItemText>
-                    <ListItemText
-                      sx={{ margin: 1, width: "auto", textAlign: "left" }}
-                    >
+                  />
+                  <Box ml={3} flexGrow={1}>
+                    <Typography variant="h6" fontWeight="bold" color="white">
+                      {booking.movie.title}
+                    </Typography>
+                    <Typography variant="body2" color="gray">
                       Seat: {booking.seatNumber}
-                    </ListItemText>
-                    <ListItemText
-                      sx={{ margin: 1, width: "auto", textAlign: "left" }}
-                    >
-                      Date: {new Date(booking.date).toDateString()}
-                    </ListItemText>
+                    </Typography>
+                    <Typography variant="body2" color="gray">
+                      Date: {new Date(booking.date).toLocaleString() || "Invalid Date"}
+                    </Typography>
+                  </Box>
+                  <Tooltip title="Delete Booking">
                     <IconButton
                       onClick={() => handleDelete(booking._id)}
                       color="error"
                     >
                       <DeleteForeverIcon />
                     </IconButton>
-                  </ListItem>
-                ))}
-              </List>
+                  </Tooltip>
+                </Box>
+              ))}
             </Box>
-          </Box>
-        )}
+          ) : (
+            <Box textAlign="center" mt={5}>
+              {/* <img
+                src="/assets/no-bookings.svg"
+                alt="No bookings"
+                style={{ width: "200px" }}
+              /> */}
+              <Typography variant="h6" color="gray" mt={2}>
+                You have no bookings yet.
+              </Typography>
+              <Button
+                variant="contained"
+                color="primary"
+                component={Link}
+                to="/movies"
+                sx={{ mt: 2 }}
+              >
+                Book Now
+              </Button>
+            </Box>
+          )}
+        </Box>
       </Fragment>
     </Box>
   );

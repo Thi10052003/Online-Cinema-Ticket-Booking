@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import {
   Typography,
   Box,
@@ -24,15 +24,12 @@ import {
 
 const Payment = () => {
   const location = useLocation();
-  const navigate = useNavigate();
-  const { seats, totalCost, date, movie = "Movie Title" } = location.state || {};
+  const { seats, totalCost, movie } = location.state || {};
 
-  // States for Code, QR, and Alerts
   const [ticketCode, setTicketCode] = useState("");
   const [qrLink, setQrLink] = useState("");
   const [openAlert, setOpenAlert] = useState(false);
 
-  // Generate Random Code
   const generateRandomCode = (length = 6) => {
     const charset =
       "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -44,32 +41,21 @@ const Payment = () => {
     return code;
   };
 
-  // Generate QR Code
   const generateQRCode = async (code) => {
     const link = await QRCode.toDataURL(code);
     setQrLink(link);
   };
 
-  // Handle Payment Logic
   const handlePayment = async () => {
     const code = generateRandomCode();
     await generateQRCode(code);
 
-    // Simulate payment success and alert
     setOpenAlert(true);
     console.log("Payment Successful with Code:", code);
-
-    // Navigate to confirmation page after 2 seconds
-    // setTimeout(() => {
-    //   navigate("/confirmation", {
-    //     state: { seats, totalCost, date, ticketCode: code },
-    //   });
-    // }, 2000);
   };
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center" padding={4}>
-      {/* Success Alert */}
       <Collapse in={openAlert}>
         <Alert
           severity="success"
@@ -89,16 +75,21 @@ const Payment = () => {
         </Alert>
       </Collapse>
 
-      {/* Payment Details */}
       <Typography variant="h4" gutterBottom>
         Payment Details
       </Typography>
-      <Typography variant="h6">Movie: {movie}</Typography>
-      <Typography variant="h6">Selected Seats: {seats?.join(", ")}</Typography>
-      <Typography variant="h6">Total Cost: {totalCost} ₫</Typography>
-      <Typography variant="h6">Booking Date: {date}</Typography>
+      {movie?.title ? (
+        <>
+          <Typography variant="h6">Movie: {movie.title}</Typography>
+          <Typography variant="h6">Selected Seats: {seats?.join(", ")}</Typography>
+          <Typography variant="h6">Total Cost: {totalCost} ₫</Typography>
+        </>
+      ) : (
+        <Typography variant="h6" color="error">
+          No movie details available
+        </Typography>
+      )}
 
-      {/* Pay Now Button */}
       <Button
         variant="contained"
         color="primary"
@@ -109,7 +100,6 @@ const Payment = () => {
         {openAlert ? "Payment Completed" : "Pay Now"}
       </Button>
 
-      {/* QR Code and Share Options */}
       {ticketCode && (
         <Box mt={4} textAlign="center">
           <Typography variant="h6">

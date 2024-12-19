@@ -3,12 +3,12 @@ import Bookings from "../models/Bookings.js";
 import Movie from "../models/Movie.js";
 import User from "../models/User.js";
 
-// Updated newBooking
+// Updated newBooking with occupiedSeats logic
 export const newBooking = async (req, res, next) => {
-  const { movie, date, seatNumber, user } = req.body;
+  const { movie, seatNumber, user } = req.body;
 
   // Validate inputs
-  if (!movie || !date || !seatNumber || !user) {
+  if (!movie || !seatNumber || !user) {
     return res.status(400).json({ message: "All fields are required." });
   }
 
@@ -34,17 +34,31 @@ export const newBooking = async (req, res, next) => {
       return res.status(404).json({ message: "User not found with the given ID." });
     }
 
+    // Validate seat occupancy
+    const seatNumbers = Array.isArray(seatNumber) ? seatNumber : [seatNumber];
+    const isSeatOccupied = seatNumbers.some((seat) =>
+      existingMovie.occupiedSeats.includes(seat)
+    );
+
+    if (isSeatOccupied) {
+      await session.abortTransaction();
+      session.endSession();
+      return res.status(400).json({ message: "One or more seats are already occupied." });
+    }
+
     // Create a new booking
     const booking = new Bookings({
       movie,
-      date: new Date(date),
-      seatNumber,
+      seatNumber: seatNumbers,
       user,
     });
 
     // Add booking references to user and movie
     existingUser.bookings.push(booking._id);
     existingMovie.bookings.push(booking._id);
+
+    // Update occupiedSeats in the movie
+    existingMovie.occupiedSeats.push(...seatNumbers);
 
     // Save all entities within the transaction
     await Promise.all([
@@ -63,7 +77,7 @@ export const newBooking = async (req, res, next) => {
   }
 };
 
-// Updated getBookingById
+// Get booking by ID (unchanged)
 export const getBookingById = async (req, res, next) => {
   const id = req.params.id;
 
@@ -81,7 +95,7 @@ export const getBookingById = async (req, res, next) => {
   }
 };
 
-// Updated deleteBooking
+// Updated deleteBooking with occupiedSeats logic
 export const deleteBooking = async (req, res, next) => {
   const id = req.params.id;
 
@@ -105,6 +119,15 @@ export const deleteBooking = async (req, res, next) => {
     await booking.user.bookings.pull(booking._id);
     await booking.movie.bookings.pull(booking._id);
 
+    // Remove seat(s) from occupiedSeats in the movie
+    const seatNumbers = Array.isArray(booking.seatNumber)
+      ? booking.seatNumber
+      : [booking.seatNumber];
+    booking.movie.occupiedSeats = booking.movie.occupiedSeats.filter(
+      (seat) => !seatNumbers.includes(seat)
+    );
+
+    // Save updates and delete booking
     await Promise.all([
       booking.user.save({ session }),
       booking.movie.save({ session }),
