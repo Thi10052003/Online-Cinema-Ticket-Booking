@@ -25,7 +25,7 @@ import { deleteBooking } from "../../api-helpers/api-helpers";
 const Payment = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { bookingId, movie, seats, totalCost, date } = location.state || {};
+  const { bookingId, movie, seats, totalCost, date, showtime } = location.state || {};
 
   const [ticketCode, setTicketCode] = useState("");
   const [qrLink, setQrLink] = useState("");
@@ -162,6 +162,9 @@ const Payment = () => {
         <Typography variant="h6">Total Cost: {totalCost || "0"} ₫</Typography>
         {date && (
           <Typography variant="h6">Booking Date: {date || "Not selected"}</Typography>
+        )}
+        {showtime && (
+          <Typography variant="h6">Booking Show Time: {showtime || "Not selected"}</Typography>
         )}
         <Box mt={4}>
           {/* Conditional Rendering for QR Code or Barcode */}
