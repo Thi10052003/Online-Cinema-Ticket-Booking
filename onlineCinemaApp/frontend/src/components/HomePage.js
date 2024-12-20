@@ -61,7 +61,7 @@ const HomePage = () => {
       {/* Section Title */}
       <Box padding={{ xs: 3, sm: 5 }} margin="auto">
         <Typography variant="h4" textAlign="center" sx={{ color: "white" }}>
-          Latest Release
+          Movie Selection
         </Typography>
       </Box>
 

@@ -115,9 +115,9 @@ const Booking = () => {
     <div>
       {movie && (
         <div>
-          <Typography padding={3} fontFamily="Arial" variant="h4" textAlign="center">
+          {/* <Typography padding={3} fontFamily="Arial" variant="h4" textAlign="center">
             BOOKING ONLINE
-          </Typography>
+          </Typography> */}
           <Box display="flex" justifyContent="center">
             <Box width="100%" paddingTop={3}>
               <form onSubmit={handleSubmit}>

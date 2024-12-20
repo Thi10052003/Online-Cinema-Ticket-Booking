@@ -137,7 +137,12 @@ const UserProfile = () => {
         </Box>
 
         {/* Bookings List */}
-        <Box width="100%">
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          width="100%"
+        >
           <Typography
             variant="h4"
             textAlign="center"
@@ -162,12 +167,14 @@ const UserProfile = () => {
                   key={booking._id}
                   display="flex"
                   alignItems="center"
+                  justifyContent="center"
                   width="100%"
                   padding={2}
                   sx={{
                     backgroundColor: "#1e1e1e",
                     borderRadius: "8px",
                     boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.5)",
+                    maxWidth: "600px",
                   }}
                 >
                   <img
@@ -179,7 +186,7 @@ const UserProfile = () => {
                       borderRadius: "8px",
                     }}
                   />
-                  <Box ml={3} flexGrow={1}>
+                  <Box ml={3} flexGrow={1} textAlign="center">
                     <Typography variant="h6" fontWeight="bold" color="white">
                       {booking.movie.title}
                     </Typography>
@@ -187,8 +194,7 @@ const UserProfile = () => {
                       Seat: {booking.seatNumber}
                     </Typography>
                     <Typography variant="body2" color="gray">
-                      Date:{" "}
-                      {new Date(booking.dates).toLocaleString() || "Invalid Date"}
+                      Date: {new Date(booking.dates).toLocaleString() || "Invalid Date"}
                     </Typography>
                   </Box>
                   <Tooltip title="Delete Booking">
