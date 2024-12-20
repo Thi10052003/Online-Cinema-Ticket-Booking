@@ -43,6 +43,12 @@ const UserProfile = () => {
     fetchData();
   }, []);
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return "Invalid Date";
+    return date.toLocaleDateString(); // Returns date in the format "MM/DD/YYYY" or region-specific
+  };
+  
   // Handle delete booking action
   const handleDelete = useCallback(
     async (id) => {
@@ -137,7 +143,19 @@ const UserProfile = () => {
         </Box>
 
         {/* Bookings List */}
-        <Box width="100%">
+        <Box
+          width={"100%"}
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+          padding={3}
+          sx={{
+            backgroundColor: "#000",
+            minHeight: "100vh",
+          }}
+        >
+
           <Typography
             variant="h4"
             textAlign="center"
@@ -184,11 +202,13 @@ const UserProfile = () => {
                       {booking.movie.title}
                     </Typography>
                     <Typography variant="body2" color="gray">
-                      Seat: {booking.seatNumber}
+                      Seat: {booking.seatNumber.join(", ")}
                     </Typography>
                     <Typography variant="body2" color="gray">
-                      Date:{" "}
-                      {new Date(booking.dates).toLocaleString() || "Invalid Date"}
+                      Date: {formatDate(booking.selectedDate)}
+                    </Typography>
+                    <Typography variant="body2" color="gray">
+                      Show Time: {booking.selectedShowtime || "N/A"}
                     </Typography>
                   </Box>
                   <Tooltip title="Delete Booking">
