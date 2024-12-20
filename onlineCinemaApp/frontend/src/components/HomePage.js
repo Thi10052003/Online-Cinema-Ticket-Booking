@@ -46,6 +46,11 @@ const HomePage = () => {
         display="flex"
         justifyContent="center"
         alignItems="center"
+        sx={{
+          boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.5)",
+          borderRadius: "8px",
+          overflow: "hidden",
+        }}
       >
         <img
           src="https://i.ytimg.com/vi/e7RvFZ6XtkI/maxresdefault.jpg"
@@ -60,7 +65,15 @@ const HomePage = () => {
 
       {/* Section Title */}
       <Box padding={{ xs: 3, sm: 5 }} margin="auto">
-        <Typography variant="h4" textAlign="center" sx={{ color: "white" }}>
+        <Typography
+          variant="h4"
+          textAlign="center"
+          sx={{
+            color: "white",
+            fontWeight: "bold",
+            textShadow: "2px 2px 4px rgba(0, 0, 0, 0.8)",
+          }}
+        >
           Movie Selection
         </Typography>
       </Box>
@@ -77,7 +90,9 @@ const HomePage = () => {
         {loading ? (
           <CircularProgress sx={{ color: "white", marginTop: 2 }} />
         ) : error ? (
-          <Typography color="error">{error}</Typography>
+          <Typography color="error" sx={{ textAlign: "center", marginTop: 2 }}>
+            {error}
+          </Typography>
         ) : (
           movies.slice(0, 4).map((movie) => (
             <MovieItem
@@ -96,8 +111,16 @@ const HomePage = () => {
         <Button
           component={Link}
           to="/movies"
-          variant="outlined"
-          sx={{ color: "white", borderColor: "white", "&:hover": { borderColor: "#ccc" } }}
+          sx={{
+            color: "white",
+            borderColor: "white",
+            backgroundColor: "red",
+            padding: "10px 20px",
+            fontSize: "16px",
+            textTransform: "uppercase",
+            letterSpacing: "1px",
+            transition: "all 0.3s ease",
+          }}
         >
           View All Movies
         </Button>

@@ -14,7 +14,7 @@ const Booking = () => {
   const [error, setError] = useState(null);
   const [availableDates, setAvailableDates] = useState([]);
   const [selectedDate, setSelectedDate] = useState("");
-  const [availableShowtimes] = useState(["10:00", "12:30", "14:00", "18:00", "20:00", "22:30"]);
+  const [availableShowtimes] = useState(["08:00","́08:30","09:00","9:30","10:00", "12:30", "14:00", "18:00", "20:00", "22:30"]);
   const [selectedShowtime, setSelectedShowtime] = useState("");
   const id = useParams().id;
 

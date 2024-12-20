@@ -10,7 +10,6 @@ const AuthForm = React.memo(({ onSubmit, isAdmin }) => {
   const [isSignup, setIsSignup] = useState(false); // Track whether it's signup or login
   const [errors, setErrors] = useState({}); // Track validation errors
   const [loginSuccess, setLoginSuccess] = useState(false); // Track login success state
-
   // Handle input changes
   const handleChange = (e) => {
     setInputs((prevState) => ({
@@ -83,11 +82,11 @@ const AuthForm = React.memo(({ onSubmit, isAdmin }) => {
     >
       {/* Centered Form Box */}
       <Box
-        bgcolor="#000"
+        bgcolor="rgba(217, 217, 217, 0.1)"
         borderRadius={5}
         boxShadow={3}
-        padding={4}
-        width={350}
+        padding={6}
+        width={500}
         display="flex"
         flexDirection="column"
         alignItems="center"
@@ -169,10 +168,10 @@ const AuthForm = React.memo(({ onSubmit, isAdmin }) => {
             sx={{
               marginTop: 3,
               padding: "12px",
-              background: "linear-gradient(90deg, #628EFF 0%, #8740CD 53%, #580475 100%)",
-              borderRadius: 3,
+              background: "red",
+              borderRadius: 2,
               "&:hover": {
-                background: "linear-gradient(90deg, #580475 0%, #8740CD 53%, #628EFF 100%)",
+                background: "darkred",
               },
               fontWeight: "bold",
             }}
