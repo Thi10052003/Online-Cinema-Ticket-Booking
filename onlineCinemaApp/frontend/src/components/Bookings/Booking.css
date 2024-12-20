@@ -1,0 +1,155 @@
+/* Seat Container */
+.seat-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    position: relative;
+    background-color: #121212; /* Dark background */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.6);
+    color: #fff;
+  }
+  
+  /* Screen Styling */
+  .screen {
+    position: relative;
+    width: 100%;
+    height: 100px;
+    border-top: 3px solid #fd6565;
+    margin-top: 50px;
+    border-radius: 20%;
+    overflow: hidden;
+    box-shadow: inset 0px 10px 20px var(--color);
+    text-align: center;
+    padding-top: 15px;
+    color: #fff;
+    letter-spacing: 5px;
+    font-size: 12px;
+
+}
+  
+  /* Row of Seats */
+  .row {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+  }
+  
+  /* Seat Styling */
+.seat {
+  margin: 5px; /* Adds spacing around each seat */
+  width: 30px;
+  height: 30px;
+  border-radius: 5px;
+  text-align: center;
+  line-height: 30px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  border: 1px solid #444;
+  color: #fff;
+  background-color: #333;
+}
+
+  
+  /* Seat States */
+  .available {
+    background-color: #424242; /* Available seats in dark gray */
+  }
+  
+  .selected {
+    background-color: #00bcd4; /* Cyan for selected seats */
+    border-color: #00acc1;
+  }
+  
+  .occupied {
+    background-color: #ff5252; /* Red for occupied seats */
+    color: #fff;
+    cursor: not-allowed;
+  }
+  
+  /* Seat Hover Effect */
+  .seat:hover:not(.occupied) {
+    background-color: #7e57c2; /* Purple hover effect */
+    color: #fff;
+    transform: scale(1.1);
+  }
+  
+  /* Booking Form Styling */
+  .booking-form {
+    background-color: #1e1e1e; /* Dark form background */
+    color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.6);
+  }
+  
+  /* Total Cost Text */
+  .total-cost {
+    color: #00bcd4;
+    font-weight: bold;
+    margin-top: 20px;
+  }
+  
+  /* Booking Button */
+  .book-now-btn {
+    background: linear-gradient(90deg, #5e35b1, #7e57c2);
+    color: #fff;
+    padding: 10px;
+    margin-top: 20px;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: all 0.3s;
+  }
+  
+  .book-now-btn:hover {
+    background: linear-gradient(90deg, #7e57c2, #5e35b1);
+    transform: scale(1.05);
+  }
+  
+  /* Global background styling */
+  body {
+    background-color: #000; /* Black background */
+    color: #fff; /* White text for better visibility */
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif; /* Optional: Use consistent fonts */
+  }
+  
+  /* Fix Date Picker Visibility */
+  input[type="date"] {
+    background-color: #333; /* Dark background for input */
+    color: #fff; /* White text color */
+    border: 1px solid #555; /* Slightly lighter border */
+    padding: 8px;
+    border-radius: 5px;
+  }
+  
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1); /* Makes the calendar icon visible on dark background */
+    cursor: pointer;
+  }
+  
+  input[type="date"]:focus {
+    outline: none;
+    border-color: #7e57c2; /* Purple border when focused */
+    box-shadow: 0px 0px 5px #7e57c2;
+  }
+  
+  .MuiFormLabel-root {
+    color: #fff !important;
+    margin-bottom: 8px;
+    font-weight: bold;
+  }
+  
+  /* Poster Image Styling */
+  .poster-image {
+    width: 100%; /* Set width to 100% of the container */
+    max-width: 400px; /* Optional: Limit the max width */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 8px; /* Optional: Add rounded corners */
+    object-fit: cover; /* Prevent stretching while filling container */
+  }
